@@ -10,35 +10,20 @@
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-    <style>
-        /* 글로벌 레이아웃 설정 */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #0b1120; color: #f8fafc; overflow: hidden; }
-        .app-container { display: flex; height: 100vh; }
-        
-        /* 사이드바 디자인 */
-        .sidebar { width: 280px; background-color: #0f172a; border-right: 1px solid #1e293b; padding: 30px 20px; display: flex; flex-direction: column; flex-shrink: 0; }
-        .logo { font-size: 26px; font-weight: 700; margin-bottom: 50px; color: #38bdf8; cursor: pointer; letter-spacing: 1px; }
-        .menu-item { color: #94a3b8; padding: 14px 18px; margin-bottom: 10px; border-radius: 12px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 12px; }
-        .menu-item:hover, .menu-item.active { background-color: #1e293b; color: #ffffff; }
-        
-        /* 메인 콘텐츠 영역 */
-        .main-content { flex: 1; padding: 40px; overflow-y: auto; background-image: radial-gradient(circle at top right, rgba(56, 189, 248, 0.05), transparent); }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel" src="Home.js"></script>
+    <script type="text/babel" src="Breakeven.js"></script>
     <script type="text/babel" src="Calculator.js"></script>
     <script type="text/babel" src="DualMomentum.js"></script>
-    <script type="text/babel" src="Breakeven.js"></script>
 
     <script type="text/babel">
         const { useState } = React;
 
-        // 사이드바 컴포넌트
+        // 사이드바 구조 정의
         function Sidebar({ currentPage, setPage }) {
             return (
                 <aside className="sidebar">
@@ -59,7 +44,7 @@
             );
         }
 
-        // 전체 어플리케이션 조립
+        // 앱 사령탑 라우터
         function App() {
             const [currentPage, setCurrentPage] = useState('home');
 
