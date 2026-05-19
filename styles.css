@@ -76,6 +76,30 @@ h2 { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
 .risk-off .signal-status { color: #ef4444; }
 .target-asset { font-size: 56px; font-weight: 800; color: #f8fafc; }
 
+/* --- 새로 추가된 손익비 시나리오 & 리스크 보드 전용 --- */
+.scenario-header { color: #94a3b8; font-size: 13px; font-weight: bold; display: block; margin-bottom: 10px; }
+.scenario-input-row { display: flex; gap: 10px; margin-bottom: 15px; }
+.scenario-input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 14px; }
+.scenario-list { display: flex; flex-direction: column; gap: 8px; max-height: 150px; overflow-y: auto; }
+.scenario-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #0f172a; border-radius: 8px; border: 1px solid #334155; cursor: pointer; }
+.scenario-item:hover { border-color: #38bdf8; }
+.btn-save { background: #38bdf8; color: #0b1120; font-size: 13px; padding: 0 15px; }
+.btn-delete { background: none; border: none; color: #64748b; cursor: pointer; }
+.btn-delete:hover { color: #ef4444; }
+
+.risk-breakdown { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
+.risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.risk-card { background: #1e293b; padding: 15px; border-radius: 16px; text-align: left; }
+.risk-card.drag { border-top: 4px solid #f59e0b; }
+.risk-card.drawdown { border-top: 4px solid #ef4444; }
+.risk-title { font-size: 12px; color: #94a3b8; }
+.risk-value { font-size: 18px; font-weight: bold; margin-top: 5px; }
+.risk-desc { font-size: 11px; color: #475569; margin-top: 3px; }
+
+.final-conclusion { background: #0f172a; padding: 25px; border-radius: 20px; border: 1px solid #38bdf8; margin-top: 10px; text-align: center; }
+.final-ratio { font-size: 42px; font-weight: 800; color: #38bdf8; }
+
 /* 공통 애니메이션 */
 .fade-in { animation: fadeIn 0.4s ease-in-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
