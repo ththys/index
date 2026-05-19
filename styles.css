@@ -9,15 +9,72 @@ body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #0b1120; c
 .menu-item { color: #94a3b8; padding: 14px 18px; margin-bottom: 10px; border-radius: 12px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 12px; }
 .menu-item:hover, .menu-item.active { background-color: #1e293b; color: #ffffff; }
 
-/* 메인 콘텐츠 및 뼈대 */
+/* 메인 콘텐츠 영역 */
 .main-content { flex: 1; padding: 40px; overflow-y: auto; background-image: radial-gradient(circle at top right, rgba(56, 189, 248, 0.05), transparent); }
+h2 { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
+.subtitle { color: #94a3b8; font-size: 18px; margin-bottom: 35px; }
 
-/* ✨ 공통 컴포넌트 (카드, 버튼, 입력창 등) ✨ */
+/* 공통 UI 컴포넌트 */
 .card { background-color: #1e293b; padding: 30px; border-radius: 20px; border: 1px solid #334155; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); }
 .btn { padding: 12px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; border: none; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
 .input-group label { display: block; margin-bottom: 10px; color: #94a3b8; font-size: 14px; font-weight: bold; }
 .input-group input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 18px; transition: 0.2s; }
 .input-group input:focus { border-color: #38bdf8; outline: none; }
+
+/* 홈 화면 전용 레이아웃 */
+.home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; margin-top: 30px; }
+.nav-card { background-color: #1e293b; border: 1px solid #334155; border-radius: 20px; padding: 35px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; height: 260px; justify-content: space-between; }
+.nav-card:hover { transform: translateY(-8px); border-color: #38bdf8; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4); }
+.nav-card h3 { color: #38bdf8; font-size: 22px; margin-bottom: 15px; font-weight: 700; }
+.nav-card p { color: #94a3b8; font-size: 15px; line-height: 1.6; }
+.card-footer { margin-top: 20px; font-size: 14px; color: #475569; font-weight: bold; text-align: right; }
+.nav-card:hover .card-footer { color: #38bdf8; }
+
+/* 손익분기 전용 레이아웃 */
+.break-layout { display: grid; grid-template-columns: 380px 1fr; gap: 30px; }
+.vs-badge { background: #334155; padding: 6px 16px; border-radius: 20px; font-size: 12px; color: #38bdf8; display: inline-block; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px; }
+.result-main { background: #0f172a; border-radius: 24px; padding: 40px; text-align: center; display: flex; flex-direction: column; justify-content: center; border: 2px solid transparent; transition: 0.3s; }
+.win-b { border-color: #34d399; background: rgba(52, 211, 153, 0.05); }
+.win-a { border-color: #ef4444; background: rgba(239, 68, 68, 0.05); }
+.alpha-val { font-size: 56px; font-weight: 800; margin: 20px 0; }
+.conclusion { font-size: 18px; line-height: 1.6; color: #e2e8f0; background: #1e293b; padding: 20px; border-radius: 16px; }
+.compare-grid { margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.compare-box { text-align: left; padding: 20px; background: #1e293b; border-radius: 16px; border: 1px solid #334155; }
+
+/* 시계열 시뮬레이터 전용 */
+.calc-layout { display: flex; flex-direction: column; gap: 30px; }
+.top-settings { display: flex; gap: 15px; align-items: flex-end; margin-bottom: 25px; flex-wrap: wrap; }
+.scenario-board { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px; }
+.scenario-board::-webkit-scrollbar { height: 8px; }
+.scenario-board::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+.scenario-column { background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 15px; width: 170px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
+.scenario-column.market { background: #082f49; border-color: #0284c7; width: 190px; }
+.market .scenario-header { color: #38bdf8; border-color: #0369a1; }
+.scenario-header { text-align: center; font-weight: bold; padding-bottom: 12px; border-bottom: 1px solid #1e293b; margin-bottom: 5px; color: #f8fafc; font-size: 15px; }
+.input-row { display: flex; align-items: center; gap: 10px; }
+.input-row span { color: #94a3b8; font-size: 13px; width: 35px; text-align: center; }
+.input-row input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #475569; background: #1e293b; color: white; text-align: right; font-size: 15px; }
+.market .input-row input { background: #0c4a6e; border-color: #0ea5e9; font-weight: bold; }
+.btn-period { background: #334155; color: #f8fafc; font-size: 14px; }
+.btn-add-col { background: transparent; color: #94a3b8; border: 1px dashed #475569; width: 120px; flex-shrink: 0; }
+.btn-calc { background: #38bdf8; color: #0b1120; font-size: 16px; width: 100%; padding: 15px; margin-top: 15px; }
+.chart-container { background-color: #1e293b; padding: 25px; border-radius: 20px; border: 1px solid #334155; height: 400px; }
+.result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-top: 10px; }
+.res-box { padding: 20px; border-radius: 16px; border: 1px solid #334155; background: #0f172a; }
+
+/* 듀얼 모멘텀 전용 */
+.dm-layout { display: flex; flex-direction: column; gap: 30px; }
+.input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+.asset-box { background: #0f172a; padding: 20px; border-radius: 16px; border: 1px solid #334155; }
+.asset-box label { display: block; color: #94a3b8; font-size: 14px; font-weight: bold; margin-bottom: 10px; }
+.asset-box input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background-color: #1e293b; color: white; font-size: 16px; margin-bottom: 10px; }
+.signal-card { text-align: center; padding: 50px 20px; border-radius: 20px; margin-top: 10px; border: 2px solid transparent; }
+.risk-on { background: rgba(52, 211, 153, 0.05); border-color: #34d399; }
+.risk-off { background: rgba(239, 68, 68, 0.05); border-color: #ef4444; }
+.signal-status { font-size: 24px; font-weight: bold; margin-bottom: 15px; letter-spacing: 2px; }
+.risk-on .signal-status { color: #34d399; }
+.risk-off .signal-status { color: #ef4444; }
+.target-asset { font-size: 56px; font-weight: 800; color: #f8fafc; }
 
 /* 공통 애니메이션 */
 .fade-in { animation: fadeIn 0.4s ease-in-out; }
