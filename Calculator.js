@@ -1,39 +1,3 @@
-const calcStyles = `
-    .calc-layout { display: flex; flex-direction: column; gap: 30px; }
-    .card { background-color: #1e293b; padding: 30px; border-radius: 20px; border: 1px solid #334155; }
-    .top-settings { display: flex; gap: 15px; align-items: flex-end; margin-bottom: 25px; flex-wrap: wrap; }
-    .input-group { flex: 1; min-width: 200px; }
-    .input-group label { display: block; margin-bottom: 8px; color: #94a3b8; font-size: 14px; font-weight: bold; }
-    .input-group input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background-color: #0f172a; color: white; font-size: 16px; }
-
-    .scenario-board { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px; }
-    .scenario-board::-webkit-scrollbar { height: 8px; }
-    .scenario-board::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
-    
-    .scenario-column { background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 15px; width: 170px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
-    .scenario-column.market { background: #082f49; border-color: #0284c7; width: 190px; }
-    .scenario-header { text-align: center; font-weight: bold; padding-bottom: 12px; border-bottom: 1px solid #1e293b; margin-bottom: 5px; color: #f8fafc; font-size: 15px; }
-    .market .scenario-header { color: #38bdf8; border-color: #0369a1; }
-    
-    .input-row { display: flex; align-items: center; gap: 10px; }
-    .input-row span { color: #94a3b8; font-size: 13px; width: 35px; text-align: center; }
-    .input-row input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #475569; background: #1e293b; color: white; text-align: right; font-size: 15px; }
-    .market .input-row input { background: #0c4a6e; border-color: #0ea5e9; font-weight: bold; }
-    
-    .btn { padding: 12px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; border: none; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-    .btn-period { background: #334155; color: #f8fafc; font-size: 14px; }
-    .btn-add-col { background: transparent; color: #94a3b8; border: 1px dashed #475569; width: 120px; flex-shrink: 0; }
-    .btn-calc { background: #38bdf8; color: #0b1120; font-size: 16px; width: 100%; padding: 15px; margin-top: 15px; }
-    
-    .chart-container { background-color: #1e293b; padding: 25px; border-radius: 20px; border: 1px solid #334155; height: 400px; }
-    .result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-top: 10px; }
-    .res-box { padding: 20px; border-radius: 16px; border: 1px solid #334155; background: #0f172a; }
-`;
-
-const calcStyleEl = document.createElement('style');
-calcStyleEl.innerHTML = calcStyles;
-document.head.appendChild(calcStyleEl);
-
 function Calculator() {
     const { useState, useEffect, useRef } = React;
     const COLORS = ['#94a3b8', '#38bdf8', '#34d399', '#f43f5e', '#a855f7', '#fbbf24'];
