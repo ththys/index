@@ -3,183 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GEMSTONE (React 버전)</title>
+    <title>금융 대시보드</title>
     
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* 기본 디자인 (이전과 동일) */
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #0b1120; color: #f8fafc; }
-        .app-container { display: flex; min-height: 100vh; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #0b1120; color: #f8fafc; overflow: hidden; }
+        .app-container { display: flex; height: 100vh; }
         
-        /* 사이드바 */
-        .sidebar { width: 260px; background-color: #0f172a; border-right: 1px solid #1e293b; padding: 20px; display: flex; flex-direction: column; }
-        .logo { font-size: 24px; font-weight: bold; margin-bottom: 40px; color: white; cursor: pointer; }
+        /* 사이드바 스타일 */
+        .sidebar { width: 260px; background-color: #0f172a; border-right: 1px solid #1e293b; padding: 20px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .logo { font-size: 24px; font-weight: bold; margin-bottom: 40px; color: #38bdf8; cursor: pointer; letter-spacing: 2px; }
         .menu-item { color: #94a3b8; padding: 12px 15px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
         .menu-item:hover, .menu-item.active { background-color: #1e293b; color: #ffffff; }
         
-        /* 메인 콘텐츠 & 카드 */
+        /* 공통 메인 내용 스타일 */
         .main-content { flex: 1; padding: 40px; overflow-y: auto; }
-        .nav-card { background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 30px; text-align: center; cursor: pointer; margin-bottom: 20px; }
-        .nav-card:hover { background-color: #334155; transform: translateY(-3px); }
-        
-        /* 계산기 폼 */
-        .calc-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 5px; color: #94a3b8; font-size: 14px; }
-        .input-group input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #475569; background-color: #0f172a; color: white; }
-        .btn { width: 100%; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; border: none; }
-        .btn-add { background: transparent; border: 1px dashed #38bdf8; color: #38bdf8; margin-top: 10px; }
-        .btn-calc { background: #38bdf8; color: #0b1120; margin-top: 15px; padding: 15px; }
-        
-        /* 결과 카드 */
-        .result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
-        .box { background-color: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid #334155; }
-        .box.highlight { border-color: #38bdf8; }
-        .box.danger { border-color: #ef4444; }
-        .alpha-text { color: #34d399; font-weight: bold; margin-top: 10px; display: block; }
-        .alpha-negative { color: #ef4444; font-weight: bold; margin-top: 10px; display: block; }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
+    <script type="text/babel" src="Home.js"></script>
+    <script type="text/babel" src="Calculator.js"></script>
+
     <script type="text/babel">
         const { useState } = React;
 
-        // 🧱 1. 사이드바 컴포넌트 (이제 여기서 한 번만 수정하면 모든 화면에 자동 적용됩니다!)
+        // 사이드바 컴포넌트
         function Sidebar({ currentPage, setPage }) {
             return (
                 <aside className="sidebar">
-                    <div className="logo" onClick={() => setPage('home')}>💎 GEMSTONE</div>
-                    <div className={`menu-item ${currentPage === 'home' ? 'active' : ''}`} onClick={() => setPage('home')}>홈 (메인)</div>
-                    <div className={`menu-item ${currentPage === 'calc' ? 'active' : ''}`} onClick={() => setPage('calc')}>A. 시장 정보 (계산기)</div>
-                    <div className="menu-item" onClick={() => alert('준비 중입니다!')}>B. 자산 관리</div>
+                    <div className="logo" onClick={() => setPage('home')}>💎 금융</div>
+                    <div className={`menu-item ${currentPage === 'home' ? 'active' : ''}`} onClick={() => setPage('home')}>홈 대시보드</div>
+                    <div className={`menu-item ${currentPage === 'calc' ? 'active' : ''}`} onClick={() => setPage('calc')}>A. 현금비중 시뮬레이터</div>
+                    <div className="menu-item" onClick={() => alert('B페이지 준비 중입니다.')}>B. 자산 관리</div>
                 </aside>
             );
         }
 
-        // 🧱 2. 메인 홈 화면 컴포넌트
-        function Home({ setPage }) {
-            return (
-                <div>
-                    <h1 style={{ marginBottom: '30px' }}>ung님, 궁금한 게 있으신가요?</h1>
-                    <div className="nav-card" onClick={() => setPage('calc')}>
-                        <h3 style={{ color: '#38bdf8', marginBottom: '10px' }}>A. 시장 정보 (계산기)</h3>
-                        <p style={{ color: '#94a3b8' }}>현금 비중 및 레버리지 물타기 수익 비교</p>
-                    </div>
-                </div>
-            );
-        }
-
-        // 🧱 3. 계산기 컴포넌트 (리액트의 State를 이용해 데이터를 관리합니다)
-        function Calculator() {
-            const [capital, setCapital] = useState(1000);
-            const [dropRate, setDropRate] = useState(20);
-            const [riseRate, setRiseRate] = useState(10);
-            const [conditions, setConditions] = useState([30]); // 추가되는 현금 비중 배열
-            const [results, setResults] = useState([]);
-
-            const recoveryNeed = dropRate < 100 ? ((1 / (1 - (dropRate / 100))) - 1) * 100 : 0;
-
-            const handleCalculate = () => {
-                const C = capital, D = dropRate / 100, E = riseRate / 100;
-                const allScenarios = [0, ...conditions]; // 0%는 무조건 포함
-                
-                let baseValue = 0;
-                const newResults = allScenarios.map((percent, i) => {
-                    const R = percent / 100;
-                    let shares = C * (1 - R);
-                    let cash = C * R;
-
-                    if (cash > 0) {
-                        shares += cash / (1 - D);
-                        cash = 0;
-                    }
-
-                    let finalVal = shares * (1 + E) + cash;
-                    if (i === 0) baseValue = finalVal;
-
-                    let alpha = finalVal - baseValue;
-                    return { percent, finalVal, alpha, baseValue };
-                });
-                setResults(newResults);
-            };
-
-            return (
-                <div>
-                    <h2 style={{ marginBottom: '20px' }}>현금/레버리지 비중 수익 비교 계산기</h2>
-                    <div className="calc-grid">
-                        <div className="box">
-                            <div className="input-group">
-                                <label>a. 초기 자본금 (만 원)</label>
-                                <input type="number" value={capital} onChange={e => setCapital(Number(e.target.value))} />
-                            </div>
-                            <div className="input-group">
-                                <label>b. 예상 조정률 (하락폭 %)</label>
-                                <input type="number" value={dropRate} onChange={e => setDropRate(Number(e.target.value))} />
-                            </div>
-                            
-                            {conditions.map((val, idx) => (
-                                <div className="input-group" key={idx} style={{ borderLeft: '3px solid #38bdf8', paddingLeft: '10px' }}>
-                                    <label>d. 현금/레버리지 비중 (조건{idx+1} %)</label>
-                                    <input type="number" value={val} onChange={e => {
-                                        const newCond = [...conditions];
-                                        newCond[idx] = Number(e.target.value);
-                                        setConditions(newCond);
-                                    }} />
-                                </div>
-                            ))}
-                            <button className="btn btn-add" onClick={() => setConditions([...conditions, -30])}>+ 비교할 조건 추가</button>
-
-                            <div className="input-group" style={{ marginTop: '15px' }}>
-                                <label>e. 원금 회복 후 추가 상승률 (%)</label>
-                                <input type="number" value={riseRate} onChange={e => setRiseRate(Number(e.target.value))} />
-                            </div>
-                            
-                            <div style={{ background: '#0f172a', padding: '10px', borderRadius: '6px', fontSize: '12px', color: '#94a3b8' }}>
-                                💡 본전 복구 필요 상승률: <span style={{ color: '#38bdf8' }}>{recoveryNeed.toFixed(2)}%</span>
-                            </div>
-
-                            <button className="btn btn-calc" onClick={handleCalculate}>비교 계산하기</button>
-                        </div>
-
-                        <div className="result-grid">
-                            {results.length === 0 && <div style={{ color: '#94a3b8', marginTop: '20px' }}>계산하기 버튼을 눌러주세요.</div>}
-                            {results.map((res, i) => (
-                                <div key={i} className={`box ${i > 0 ? (res.alpha < 0 ? 'danger' : 'highlight') : ''}`}>
-                                    <h3 style={{ marginBottom: '10px', fontSize: '16px', borderBottom: '1px solid #334155', paddingBottom: '10px' }}>
-                                        {i === 0 ? 'A조건 (현금 0%)' : `${String.fromCharCode(65+i)}조건 (${res.percent}%)`}
-                                    </h3>
-                                    <div style={{ fontSize: '14px', marginBottom: '5px' }}>최종 자산: <b>{Math.round(res.finalVal).toLocaleString()}만 원</b></div>
-                                    <div style={{ fontSize: '14px', marginBottom: '5px' }}>순수익금: <b>{Math.round(res.finalVal - capital).toLocaleString()}만 원</b></div>
-                                    
-                                    {i === 0 ? <span className="alpha-text" style={{ color: '#94a3b8' }}>기준점 (Base)</span> : 
-                                     res.alpha < 0 ? <span className="alpha-negative">🔻 A 대비: {Math.round(res.alpha).toLocaleString()}만 원</span> :
-                                     <span className="alpha-text">🔥 A 대비: +{Math.round(res.alpha).toLocaleString()}만 원</span>}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
-        // 🚀 4. 메인 앱 조립 (전체 구조를 통제하는 사령탑)
+        // 전체 앱 구조 제어
         function App() {
-            // 현재 어떤 페이지를 보여줄지 결정하는 상태 (state)
             const [currentPage, setCurrentPage] = useState('home');
 
             return (
                 <div className="app-container">
-                    {/* 사이드바 컴포넌트 렌더링 */}
                     <Sidebar currentPage={currentPage} setPage={setCurrentPage} />
-                    
-                    {/* 선택된 페이지에 따라 다른 화면을 렌더링 */}
                     <main className="main-content">
+                        {/* 외부 파일에서 로드된 컴포넌트들을 연결합니다 */}
                         {currentPage === 'home' && <Home setPage={setCurrentPage} />}
                         {currentPage === 'calc' && <Calculator />}
                     </main>
@@ -187,7 +62,6 @@
             );
         }
 
-        // 리액트 실행
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
