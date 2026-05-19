@@ -43,27 +43,24 @@ function Breakeven() {
     const D = expectedDrop / 100;
 
     // 1. 기회비용 리스크 (Risk: Cash Drag)
-    // 틀렸을 때(즉시 상승 시) 현금 때문에 못 번 돈
     const riskDrag = capital * R * U;
 
     // 2. 실질 하락 리스크 (Risk: Drawdown)
-    // 맞았을 때(하락 시) 바닥까지 가면서 내 주식이 실제로 까이는 돈
     const riskDrawdown = capital * (1 - R) * D;
 
     // 3. 총 리스크 (Total Combined Risk)
     const totalRisk = riskDrag + riskDrawdown;
 
     // 4. 물타기 초과 수익 (Reward: Alpha)
-    // 예측 성공 후 반등 시 '존버' 대비 더 벌게 되는 순수 알파
     const finalA = capital * (1 + U);
     const recoveredStockVal = (capital * (1 - R) * (1 - D) + capital * R) / (1 - D);
     const finalB = recoveredStockVal * (1 + U);
     const rewardAlpha = finalB - finalA;
 
     // 5. 최종 실질 손익비 (Real Risk/Reward Ratio)
-    // 분모에 R(현금비중)이 포함된 두 리스크의 합을 넣어 비중 변화를 반영
     const rrRatio = totalRisk > 0 ? (rewardAlpha / totalRisk).toFixed(2) : 0;
     const isBWinning = rewardAlpha > 0;
+    const savedLoss = (capital * D) - riskDrawdown;
 
     return (
         <div className="fade-in">
@@ -92,6 +89,7 @@ function Breakeven() {
                     </div>
 
                     <div className="card" style={{ padding: '20px' }}>
+                        {/* 🚨 바로 이 줄에 있던 marginbottom 오타를 marginBottom 으로 고쳤습니다! */}
                         <span style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 'bold', display: 'block', marginBottom: '10px' }}>💾 시나리오 보관함</span>
                         <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
                             <input 
