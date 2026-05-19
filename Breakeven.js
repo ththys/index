@@ -1,11 +1,13 @@
 function Breakeven() {
     const { useState } = React;
     
+    // 기본 입력값 상태
     const [capital, setCapital] = useState(1000);
     const [upside, setUpside] = useState(10);
     const [cashRatio, setCashRatio] = useState(30);
     const [expectedDrop, setExpectedDrop] = useState(15);
 
+    // 시나리오 저장용 상태 (로컬 스토리지)
     const [presetName, setPresetName] = useState('');
     const [presets, setPresets] = useState(() => {
         const saved = localStorage.getItem('finance_break_presets');
@@ -35,34 +37,38 @@ function Breakeven() {
         setCapital(p.capital); setUpside(p.upside); setCashRatio(p.cashRatio); setExpectedDrop(p.expectedDrop);
     };
 
-    // --- 수학 로직 ---
-    // 1. A전략 (0% 현금 존버)
-    const finalA = capital * (1 + (upside / 100));
+    // --- 🧮 정교화된 자산배분 손익비 로직 ---
+    const R = cashRatio / 100;
+    const U = upside / 100;
+    const D = expectedDrop / 100;
 
-    // 2. B전략 (예측 성공 시: 하락 후 반등)
-    const stockPortion = capital * (1 - (cashRatio / 100));
-    const cashPortion = capital * (cashRatio / 100);
-    const droppedStockVal = stockPortion * (1 - (expectedDrop / 100));
-    const recoveredVal = (droppedStockVal + cashPortion) / (1 - (expectedDrop / 100));
-    const finalB = recoveredVal * (1 + (upside / 100));
+    // 1. 기회비용 리스크 (Risk: Cash Drag)
+    // 틀렸을 때(즉시 상승 시) 현금 때문에 못 번 돈
+    const riskDrag = capital * R * U;
 
-    // ✨ 핵심 지표 1: Reward (예측 성공 시 얻는 초과 수익 = 알파)
-    const rewardGain = finalB - finalA; 
-    const isBWinning = rewardGain > 0;
+    // 2. 실질 하락 리스크 (Risk: Drawdown)
+    // 맞았을 때(하락 시) 바닥까지 가면서 내 주식이 실제로 까이는 돈
+    const riskDrawdown = capital * (1 - R) * D;
 
-    // ✨ 핵심 지표 2: Risk (예측 실패 시의 기회비용 손실)
-    // 예측이 틀려서 시장이 하락 없이 즉시 상승(upside)해버렸을 때,
-    // 현금으로 쥐고 있던 금액만큼 상승분을 못 먹게 되므로 그 차액이 손해(Risk)가 됨.
-    const riskLoss = cashPortion * (upside / 100); 
+    // 3. 총 리스크 (Total Combined Risk)
+    const totalRisk = riskDrag + riskDrawdown;
 
-    // ✨ 핵심 지표 3: 손익비 (Risk/Reward Ratio)
-    // 리스크를 1로 두었을 때, 돌아오는 리워드의 배수
-    const rrRatio = riskLoss > 0 ? (rewardGain / riskLoss).toFixed(2) : 0;
+    // 4. 물타기 초과 수익 (Reward: Alpha)
+    // 예측 성공 후 반등 시 '존버' 대비 더 벌게 되는 순수 알파
+    const finalA = capital * (1 + U);
+    const recoveredStockVal = (capital * (1 - R) * (1 - D) + capital * R) / (1 - D);
+    const finalB = recoveredStockVal * (1 + U);
+    const rewardAlpha = finalB - finalA;
+
+    // 5. 최종 실질 손익비 (Real Risk/Reward Ratio)
+    // 분모에 R(현금비중)이 포함된 두 리스크의 합을 넣어 비중 변화를 반영
+    const rrRatio = totalRisk > 0 ? (rewardAlpha / totalRisk).toFixed(2) : 0;
+    const isBWinning = rewardAlpha > 0;
 
     return (
         <div className="fade-in">
-            <h2 style={{fontSize: '32px', fontWeight: '800', marginBottom: '10px'}}>기회비용 vs 물타기 분석 ⚖️</h2>
-            <p className="subtitle">예측 실패 시의 손해(Risk)와 성공 시의 초과수익(Reward) 손익비를 계산합니다.</p>
+            <h2>기회비용 vs 물타기 분석 ⚖️</h2>
+            <p className="subtitle">현금 비중에 따른 리스크(Drag + Drawdown) 대비 보상 배수를 분석합니다.</p>
 
             <div className="break-layout">
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -106,42 +112,39 @@ function Breakeven() {
                 </div>
 
                 <div className={`result-main ${isBWinning ? 'win-b' : 'win-a'}`} style={{justifyContent: 'flex-start'}}>
-                    <div><div className="vs-badge">RISK / REWARD ANALYSIS</div></div>
+                    <div><div className="vs-badge">REAL-TIME RISK/REWARD MODEL</div></div>
                     
-                    {/* 상단: 단순 승패 및 알파 금액 */}
-                    <div style={{color: '#94a3b8', fontSize: '16px', marginTop: '10px'}}>현금 보유 전략의 예측 성공 시 초과수익</div>
+                    <div style={{color: '#94a3b8', fontSize: '16px', marginTop: '10px'}}>예측 적중 시 발생하는 순수 초과수익(Reward)</div>
                     <div className="alpha-val" style={{color: isBWinning ? '#34d399' : '#ef4444', margin: '10px 0'}}>
-                        {isBWinning ? '+' : ''}{Math.round(rewardGain).toLocaleString()} <span style={{fontSize:'24px', fontWeight:'normal'}}>만원</span>
+                        {isBWinning ? '+' : ''}{Math.round(rewardAlpha).toLocaleString()} <span style={{fontSize:'24px', fontWeight:'normal'}}>만원</span>
                     </div>
 
-                    {/* ✨ 하단: 손익비 상세 계산 영역 */}
-                    <div style={{display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '30px'}}>
+                    <div style={{display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '15px'}}>
                         
-                        <div style={{display: 'flex', justifyContent: 'space-between', background: '#1e293b', padding: '20px', borderRadius: '16px', borderLeft: '4px solid #ef4444', alignItems: 'center'}}>
-                            <div style={{textAlign: 'left'}}>
-                                <div style={{fontSize: '14px', color: '#94a3b8'}}>📉 내 예측이 틀렸을 때 (하락 없이 즉시 상승)</div>
-                                <div style={{fontSize: '16px', fontWeight: 'bold', color: '#f8fafc', marginTop: '5px'}}>현금 보유로 인한 기회비용 (Risk)</div>
+                        {/* 리스크 해부 보드 */}
+                        <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px'}}>
+                            <div style={{background: '#1e293b', padding: '15px', borderRadius: '16px', borderTop: '4px solid #f59e0b', textAlign: 'left'}}>
+                                <div style={{fontSize: '12px', color: '#94a3b8'}}>기회비용 (Drag)</div>
+                                <div style={{fontSize: '18px', fontWeight: 'bold', color: '#f59e0b', marginTop: '5px'}}>-{Math.round(riskDrag).toLocaleString()}만</div>
+                                <div style={{fontSize: '11px', color: '#475569', marginTop: '3px'}}>상승을 놓칠 위험</div>
                             </div>
-                            <div style={{fontSize: '24px', fontWeight: 'bold', color: '#ef4444'}}>-{Math.round(riskLoss).toLocaleString()}만</div>
+                            <div style={{background: '#1e293b', padding: '15px', borderRadius: '16px', borderTop: '4px solid #ef4444', textAlign: 'left'}}>
+                                <div style={{fontSize: '12px', color: '#94a3b8'}}>실제 타격 (Drawdown)</div>
+                                <div style={{fontSize: '18px', fontWeight: 'bold', color: '#ef4444', marginTop: '5px'}}>-{Math.round(riskDrawdown).toLocaleString()}만</div>
+                                <div style={{fontSize: '11px', color: '#475569', marginTop: '3px'}}>하락을 견뎌야 할 고통</div>
+                            </div>
                         </div>
 
-                        <div style={{display: 'flex', justifyContent: 'space-between', background: '#1e293b', padding: '20px', borderRadius: '16px', borderLeft: `4px solid ${isBWinning ? '#34d399' : '#64748b'}`, alignItems: 'center'}}>
-                            <div style={{textAlign: 'left'}}>
-                                <div style={{fontSize: '14px', color: '#94a3b8'}}>📈 내 예측이 맞았을 때 (하락 후 반등)</div>
-                                <div style={{fontSize: '16px', fontWeight: 'bold', color: '#f8fafc', marginTop: '5px'}}>물타기 성공 시 초과수익 (Reward)</div>
+                        {/* 최종 손익비 결론 */}
+                        <div style={{background: '#0f172a', padding: '25px', borderRadius: '20px', border: '1px solid #38bdf8', marginTop: '10px', textAlign: 'center'}}>
+                            <div style={{fontSize: '15px', color: '#94a3b8', marginBottom: '8px'}}>총 리스크($Risk_{Total}$) 대비 보상($Reward$)</div>
+                            <div style={{fontSize: '42px', fontWeight: '800', color: '#38bdf8'}}>
+                                1 : {rrRatio}
                             </div>
-                            <div style={{fontSize: '24px', fontWeight: 'bold', color: isBWinning ? '#34d399' : '#64748b'}}>+{Math.round(Math.max(0, rewardGain)).toLocaleString()}만</div>
-                        </div>
-
-                        <div style={{background: '#0f172a', padding: '20px', borderRadius: '16px', border: '1px solid #38bdf8', marginTop: '10px'}}>
-                            <div style={{fontSize: '15px', color: '#94a3b8', marginBottom: '10px'}}>결론: 이 전략의 최종 손익비 (Risk : Reward)</div>
-                            <div style={{fontSize: '32px', fontWeight: '800', color: rrRatio >= 2 ? '#38bdf8' : (rrRatio > 1 ? '#34d399' : '#ef4444')}}>
-                                {isBWinning ? `1 : ${rrRatio}` : '분석 불가 (무조건 손실)'}
-                            </div>
-                            <div style={{fontSize: '13px', color: '#64748b', marginTop: '8px'}}>
-                                {rrRatio >= 2 ? '훌륭한 자리입니다. 감수하는 리스크 대비 기대 수익이 매우 높습니다.' : 
-                                 (rrRatio > 1 ? '나쁘지 않은 자리입니다. 얻을 수 있는 이익이 손해보다 큽니다.' : 
-                                 '위험한 자리입니다. 하락을 기다리는 기회비용이 기대 수익보다 큽니다.')}
+                            <div style={{fontSize: '14px', color: '#e2e8f0', marginTop: '12px', lineHeight: '1.5'}}>
+                                현금 비중 <b>{cashRatio}%</b> 세팅 시,<br/> 
+                                총 <b>{Math.round(totalRisk).toLocaleString()}만 원</b>의 복합 리스크를 감수하고<br/>
+                                <b>{Math.round(rewardAlpha).toLocaleString()}만 원</b>의 알파 수익을 노리는 매치입니다.
                             </div>
                         </div>
 
