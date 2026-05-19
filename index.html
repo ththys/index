@@ -1,25 +1,65 @@
-<script type="text/babel" src="Home.js"></script>
-<script type="text/babel" src="Calculator.js"></script>
-<script type="text/babel" src="DualMomentum.js"></script>  ```
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>금융 전략 대시보드</title>
+    
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-**② App() 사령탑 및 사이드바 수정**
-`index.html` 안의 `Sidebar`와 `App` 부분을 아래처럼 살짝 고쳐줍니다. `C. 듀얼 모멘텀` 메뉴가 추가되고, 클릭 시 `DualMomentum` 화면이 나오게 됩니다.
+    <style>
+        /* 글로벌 레이아웃 설정 */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #0b1120; color: #f8fafc; overflow: hidden; }
+        .app-container { display: flex; height: 100vh; }
+        
+        /* 사이드바 디자인 */
+        .sidebar { width: 280px; background-color: #0f172a; border-right: 1px solid #1e293b; padding: 30px 20px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .logo { font-size: 26px; font-weight: 700; margin-bottom: 50px; color: #38bdf8; cursor: pointer; letter-spacing: 1px; }
+        .menu-item { color: #94a3b8; padding: 14px 18px; margin-bottom: 10px; border-radius: 12px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 12px; }
+        .menu-item:hover, .menu-item.active { background-color: #1e293b; color: #ffffff; }
+        
+        /* 메인 콘텐츠 영역 */
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; background-image: radial-gradient(circle at top right, rgba(56, 189, 248, 0.05), transparent); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
 
-```javascript
+    <script type="text/babel" src="Home.js"></script>
+    <script type="text/babel" src="Calculator.js"></script>
+    <script type="text/babel" src="DualMomentum.js"></script>
+    <script type="text/babel" src="Breakeven.js"></script>
+
+    <script type="text/babel">
+        const { useState } = React;
+
         // 사이드바 컴포넌트
         function Sidebar({ currentPage, setPage }) {
             return (
                 <aside className="sidebar">
-                    <div className="logo" onClick={() => setPage('home')}> 금융</div>
-                    <div className={`menu-item ${currentPage === 'home' ? 'active' : ''}`} onClick={() => setPage('home')}>홈 대시보드</div>
-                    <div className={`menu-item ${currentPage === 'calc' ? 'active' : ''}`} onClick={() => setPage('calc')}>A. 현금비중 시뮬레이터</div>
-                    <div className="menu-item" onClick={() => alert('B페이지 준비 중입니다.')}>B. 자산 관리</div>
-                    <div className={`menu-item ${currentPage === 'dm' ? 'active' : ''}`} onClick={() => setPage('dm')}>C. 듀얼 모멘텀 분석기</div> {/* 👈 이 줄 추가 */}
+                    <div className="logo" onClick={() => setPage('home')}>💎 금융</div>
+                    <div className={`menu-item ${currentPage === 'home' ? 'active' : ''}`} onClick={() => setPage('home')}>
+                        <i className="fa-solid fa-house"></i> 홈 대시보드
+                    </div>
+                    <div className={`menu-item ${currentPage === 'break' ? 'active' : ''}`} onClick={() => setPage('break')}>
+                        <i className="fa-solid fa-scale-balanced"></i> 손익분기 분석
+                    </div>
+                    <div className={`menu-item ${currentPage === 'calc' ? 'active' : ''}`} onClick={() => setPage('calc')}>
+                        <i className="fa-solid fa-chart-line"></i> 시계열 시뮬레이터
+                    </div>
+                    <div className={`menu-item ${currentPage === 'dm' ? 'active' : ''}`} onClick={() => setPage('dm')}>
+                        <i className="fa-solid fa-traffic-light"></i> 듀얼 모멘텀
+                    </div>
                 </aside>
             );
         }
 
-        // 전체 앱 구조 제어
+        // 전체 어플리케이션 조립
         function App() {
             const [currentPage, setCurrentPage] = useState('home');
 
@@ -28,9 +68,16 @@
                     <Sidebar currentPage={currentPage} setPage={setCurrentPage} />
                     <main className="main-content">
                         {currentPage === 'home' && <Home setPage={setCurrentPage} />}
+                        {currentPage === 'break' && <Breakeven />}
                         {currentPage === 'calc' && <Calculator />}
-                        {currentPage === 'dm' && <DualMomentum />} {/* 👈 이 줄 추가 */}
+                        {currentPage === 'dm' && <DualMomentum />}
                     </main>
                 </div>
             );
         }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
