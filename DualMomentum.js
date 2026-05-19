@@ -10,25 +10,8 @@ function DualMomentum() {
     const isRiskOn = relativeWinnerRet > safeAsset.ret;
     const finalTarget = isRiskOn ? relativeWinnerName : safeAsset.name;
 
-    const styles = `
-        .dm-layout { display: flex; flex-direction: column; gap: 30px; }
-        .card { background-color: #1e293b; padding: 30px; border-radius: 20px; border: 1px solid #334155; }
-        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .asset-box { background: #0f172a; padding: 20px; border-radius: 16px; border: 1px solid #334155; }
-        .asset-box label { display: block; color: #94a3b8; font-size: 14px; font-weight: bold; margin-bottom: 10px; }
-        .asset-box input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background-color: #1e293b; color: white; font-size: 16px; margin-bottom: 10px; }
-        .signal-card { text-align: center; padding: 50px 20px; border-radius: 20px; margin-top: 10px; border: 2px solid transparent; }
-        .risk-on { background: rgba(52, 211, 153, 0.05); border-color: #34d399; }
-        .risk-off { background: rgba(239, 68, 68, 0.05); border-color: #ef4444; }
-        .signal-status { font-size: 24px; font-weight: bold; margin-bottom: 15px; letter-spacing: 2px; }
-        .risk-on .signal-status { color: #34d399; }
-        .risk-off .signal-status { color: #ef4444; }
-        .target-asset { font-size: 56px; font-weight: 800; color: #f8fafc; }
-    `;
-
     return (
         <div className="fade-in dm-layout">
-            <style>{styles}</style>
             <div>
                 <h2 style={{fontSize: '32px', fontWeight: '800', marginBottom: '10px'}}>듀얼 모멘텀 분석기 🚦</h2>
                 <p style={{color: '#94a3b8', fontSize: '18px'}}>최근 12개월 수익률을 비교하여 기계적인 투자 신호를 제공합니다.</p>
