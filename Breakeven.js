@@ -1,27 +1,3 @@
-const breakStyles = `
-    .break-layout { display: grid; grid-template-columns: 380px 1fr; gap: 30px; }
-    .card { background-color: #1e293b; padding: 30px; border-radius: 20px; border: 1px solid #334155; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); }
-    .input-group { margin-bottom: 25px; }
-    .input-group label { display: block; margin-bottom: 10px; color: #94a3b8; font-size: 14px; font-weight: bold; }
-    .input-group input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 18px; transition: 0.2s; }
-    .input-group input:focus { border-color: #38bdf8; outline: none; }
-    
-    .vs-badge { background: #334155; padding: 6px 16px; border-radius: 20px; font-size: 12px; color: #38bdf8; display: inline-block; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px; }
-    
-    .result-main { background: #0f172a; border-radius: 24px; padding: 40px; text-align: center; display: flex; flex-direction: column; justify-content: center; border: 2px solid transparent; transition: 0.3s; }
-    .win-b { border-color: #34d399; background: rgba(52, 211, 153, 0.05); }
-    .win-a { border-color: #ef4444; background: rgba(239, 68, 68, 0.05); }
-
-    .alpha-val { font-size: 56px; font-weight: 800; margin: 20px 0; }
-    .conclusion { font-size: 18px; line-height: 1.6; color: #e2e8f0; background: #1e293b; padding: 20px; border-radius: 16px; }
-    .compare-grid { margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .compare-box { text-align: left; padding: 20px; background: #1e293b; border-radius: 16px; border: 1px solid #334155; }
-`;
-
-const breakStyleEl = document.createElement('style');
-breakStyleEl.innerHTML = breakStyles;
-document.head.appendChild(breakStyleEl);
-
 function Breakeven() {
     const { useState } = React;
     const [capital, setCapital] = useState(1000);
@@ -44,8 +20,8 @@ function Breakeven() {
 
     return (
         <div className="fade-in">
-            <h2 style={{fontSize: '32px', fontWeight: '800', marginBottom: '10px'}}>기회비용 vs 물타기 분석 ⚖️</h2>
-            <p style={{color: '#94a3b8', fontSize: '18px', marginBottom: '30px'}}>현금을 들고 하락을 기다릴 때의 손익분기점을 확인하세요.</p>
+            <h2>기회비용 vs 물타기 분석 ⚖️</h2>
+            <p className="subtitle">현금을 들고 하락을 기다릴 때의 손익분기점을 확인하세요.</p>
 
             <div className="break-layout">
                 <div className="card">
