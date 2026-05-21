@@ -2,18 +2,15 @@ function Calculator() {
     const { useState, useEffect, useRef } = React;
     const COLORS = ['#94a3b8', '#38bdf8', '#34d399', '#f43f5e', '#a855f7', '#fbbf24'];
 
-    // 1. 기본 시뮬레이션 상태 변수들
     const [capital, setCapital] = useState(1000);
     const [marketReturns, setMarketReturns] = useState([-20, 10, 15]);
     const [scenarios, setScenarios] = useState([{ id: 1, label: 'B전략', ratios: [30, 0, 0] }]);
     const [results, setResults] = useState([]);
     
-    // 2. 시나리오 저장/보관함용 상태 변수들 (로컬 스토리지 연동)
     const [presetName, setPresetName] = useState('');
     const [presets, setPresets] = useState(() => {
         const saved = localStorage.getItem('finance_calc_presets');
         return saved ? JSON.parse(saved) : [
-            // 초기에 참고할 수 있는 3개년 예시 시나리오 기본 제공
             { id: 1, name: '금융위기 후 반등 마스터', capital: 1000, marketReturns: [-30, 20, 15], scenarios: [{ id: 1, label: 'B전략', ratios: [50, 10, 0] }] },
             { id: 2, name: '지루한 박스피 횡보장', capital: 1000, marketReturns: [2, -3, 4], scenarios: [{ id: 1, label: 'B전략', ratios: [20, 20, 20] }] }
         ];
@@ -22,7 +19,6 @@ function Calculator() {
     const chartRef = useRef(null);
     const canvasRef = useRef(null);
 
-    // --- 🛠️ 테이블 구조 제어 함수들 (우측 확장형) ---
     const addPeriod = () => {
         setMarketReturns([...marketReturns, 0]);
         setScenarios(scenarios.map(s => ({ ...s, ratios: [...s.ratios, 0] })));
@@ -33,7 +29,7 @@ function Calculator() {
         setScenarios(scenarios.map(s => ({ ...s, ratios: s.ratios.slice(0, -1) })));
     };
     const addScenario = () => {
-        const nextChar = String.fromCharCode(66 + scenarios.length); // B, C, D... 순으로 이름 생성
+        const nextChar = String.fromCharCode(66 + scenarios.length);
         setScenarios([...scenarios, { id: Date.now(), label: `${nextChar}전략`, ratios: Array(marketReturns.length).fill(0) }]);
     };
     const removeScenario = (id) => {
@@ -41,16 +37,9 @@ function Calculator() {
         setScenarios(scenarios.filter(s => s.id !== id));
     };
 
-    // --- 💾 시나리오 보관함 연동 함수들 ---
     const saveCurrentPreset = () => {
         if (!presetName.trim()) { alert('시나리오 이름을 입력해주세요!'); return; }
-        const newPreset = {
-            id: Date.now(),
-            name: presetName,
-            capital,
-            marketReturns,
-            scenarios
-        };
+        const newPreset = { id: Date.now(), name: presetName, capital, marketReturns, scenarios };
         const updated = [...presets, newPreset];
         setPresets(updated);
         localStorage.setItem('finance_calc_presets', JSON.stringify(updated));
@@ -65,14 +54,21 @@ function Calculator() {
     };
 
     const loadPreset = (p) => {
-        setCapital(p.capital);
-        setMarketReturns(p.marketReturns);
-        setScenarios(p.scenarios);
+        setCapital(p.capital); setMarketReturns(p.marketReturns); setScenarios(p.scenarios);
     };
 
-    // --- 🧮 복리 및 자산 곡선 연산 로직 ---
+    // ✨ 핵심: 표 우측에 실시간으로 결과를 보여주기 위한 헬퍼 함수
+    const calculateRowFinal = (ratios) => {
+        let currentVal = capital;
+        marketReturns.forEach((ret, i) => {
+            const r = (ratios[i] || 0) / 100;
+            currentVal = (currentVal * (1 - r) * (1 + ret / 100)) + (currentVal * r);
+        });
+        return currentVal;
+    };
+    const baseFinalVal = calculateRowFinal(Array(marketReturns.length).fill(0));
+
     const handleCalc = () => {
-        // 기준점이 되는 A전략(현금 0%)을 배열 맨 앞에 임시로 결합
         const allScens = [{ label: 'A전략 (현금 0%)', ratios: Array(marketReturns.length).fill(0) }, ...scenarios];
         let baseFinal = 0;
 
@@ -93,7 +89,6 @@ function Calculator() {
         setResults(newResults);
     };
 
-    // --- 📊 차트 그리기 효과 ---
     useEffect(() => {
         if (results.length === 0) return;
         const ctx = canvasRef.current.getContext('2d');
@@ -115,7 +110,6 @@ function Calculator() {
                 <p className="subtitle">시기별 시장 수익률과 전략 케이스를 확장하여 복리 효과를 추적합니다.</p>
             </div>
 
-            {/* 상단 레이아웃 (설정 및 시나리오 보관함) */}
             <div style={{ display: 'grid', gridTemplateColumns: '400px 1fr', gap: '30px' }}>
                 <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     <div className="input-group" style={{ margin: 0 }}>
@@ -148,21 +142,21 @@ function Calculator() {
                 </div>
             </div>
 
-            {/* ✨ 요청 사항 반영: 시기는 우측(가로) 확장, 케이스는 하단(세로) 확장 테이블 */}
             <div className="card" style={{ padding: 0, overflow: 'hidden', marginTop: '10px' }}>
                 <div style={{ overflowX: 'auto', background: '#0f172a' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: `${250 + (marketReturns.length * 120)}px` }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: `${350 + (marketReturns.length * 120)}px` }}>
                         <thead>
                             <tr style={{ borderBottom: '1px solid #334155', background: '#1e293b' }}>
-                                <th style={{ padding: '15px', color: '#94a3b8', width: '220px' }}>구분 (전략 케이스)</th>
+                                <th style={{ padding: '15px', color: '#94a3b8', width: '200px' }}>구분 (전략 케이스)</th>
                                 {marketReturns.map((_, pIdx) => (
                                     <th key={pIdx} style={{ padding: '15px', color: '#f8fafc', width: '120px', textAlign: 'center' }}>{pIdx + 1}기</th>
                                 ))}
-                                <th style={{ padding: '15px', width: '80px', textAlign: 'center' }}>액션</th>
+                                {/* ✨ 추가된 실시간 결과 열 */}
+                                <th style={{ padding: '15px', width: '180px', textAlign: 'right', color: '#94a3b8' }}>실시간 결과 (A대비)</th>
+                                <th style={{ padding: '15px', width: '70px', textAlign: 'center' }}>액션</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {/* 1열 상설고정: 시장 수익률 행 */}
                             <tr style={{ borderBottom: '1px solid #334155', background: 'rgba(56, 189, 248, 0.02)' }}>
                                 <td style={{ padding: '15px', fontWeight: 'bold', color: '#38bdf8' }}>📈 시장 수익률 (%)</td>
                                 {marketReturns.map((ret, pIdx) => (
@@ -170,30 +164,54 @@ function Calculator() {
                                         <input type="number" value={ret} onChange={e => { const newRets = [...marketReturns]; newRets[pIdx] = Number(e.target.value); setMarketReturns(newRets); }} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #0ea5e9', background: '#0c4a6e', color: 'white', textAlign: 'center', fontWeight: 'bold' }} />
                                     </td>
                                 ))}
+                                <td style={{ textAlign: 'right', padding: '15px', color: '#475569' }}>-</td>
                                 <td></td>
                             </tr>
-                            {/* 2열 상설고정: A전략 (현금 0% 벤치마크) */}
-                            <tr style={{ borderBottom: '1px solid #1e293b', opacity: 0.5 }}>
-                                <td style={{ padding: '15px', color: '#94a3b8' }}>A전략 (기준선: 현금 0%)</td>
+                            <tr style={{ borderBottom: '1px solid #1e293b', opacity: 0.6 }}>
+                                <td style={{ padding: '15px', color: '#94a3b8' }}>A전략 (기준: 현금 0%)</td>
                                 {marketReturns.map((_, pIdx) => (
                                     <td key={pIdx} style={{ padding: '10px' }}><input type="number" disabled value="0" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #475569', background: '#1e293b', color: '#94a3b8', textAlign: 'center' }} /></td>
                                 ))}
+                                <td style={{ textAlign: 'right', padding: '15px' }}>
+                                    <div style={{ fontSize: '15px', fontWeight: 'bold', color: '#f8fafc' }}>{Math.round(baseFinalVal).toLocaleString()}만</div>
+                                    <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>기준선 (0%)</div>
+                                </td>
                                 <td></td>
                             </tr>
-                            {/* 하단(세로)으로 동적 추가되는 현금 비중 케이스들 */}
-                            {scenarios.map((scen, sIdx) => (
-                                <tr key={scen.id} style={{ borderBottom: '1px solid #1e293b' }}>
-                                    <td style={{ padding: '15px', fontWeight: 'bold', color: '#34d399' }}>⚙️ {scen.label} 현금 보유 (%)</td>
-                                    {marketReturns.map((_, pIdx) => (
-                                        <td key={pIdx} style={{ padding: '10px' }}>
-                                            <input type="number" value={scen.ratios[pIdx] || 0} onChange={e => { const newScens = [...scenarios]; newScens[sIdx].ratios[pIdx] = Number(e.target.value); setScenarios(newScens); }} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #475569', background: '#1e293b', color: 'white', textAlign: 'center' }} />
+                            {scenarios.map((scen, sIdx) => {
+                                // ✨ 사용자 입력 비중에 따른 실시간 연산
+                                const finalVal = calculateRowFinal(scen.ratios);
+                                const diff = finalVal - baseFinalVal;
+                                const diffPct = baseFinalVal !== 0 ? (diff / baseFinalVal) * 100 : 0;
+                                const isPos = diff >= 0;
+
+                                return (
+                                    <tr key={scen.id} style={{ borderBottom: '1px solid #1e293b' }}>
+                                        <td style={{ padding: '15px', fontWeight: 'bold', color: '#34d399' }}>⚙️ {scen.label} 현금 보유 (%)</td>
+                                        {marketReturns.map((_, pIdx) => (
+                                            <td key={pIdx} style={{ padding: '10px' }}>
+                                                <input type="number" value={scen.ratios[pIdx] || 0} onChange={e => { const newScens = [...scenarios]; newScens[sIdx].ratios[pIdx] = Number(e.target.value); setScenarios(newScens); }} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #475569', background: '#1e293b', color: 'white', textAlign: 'center' }} />
+                                            </td>
+                                        ))}
+                                        {/* ✨ 실시간 결과 출력칸 */}
+                                        <td style={{ textAlign: 'right', padding: '15px' }}>
+                                            <div style={{ fontSize: '15px', fontWeight: 'bold', color: '#f8fafc' }}>
+                                                {Math.round(finalVal).toLocaleString()}만
+                                            </div>
+                                            {diff !== 0 ? (
+                                                <div style={{ fontSize: '13px', fontWeight: 'bold', color: isPos ? '#34d399' : '#ef4444', marginTop: '4px' }}>
+                                                    {isPos ? '+' : ''}{Math.round(diff).toLocaleString()}만 ({isPos ? '+' : ''}{diffPct.toFixed(1)}%)
+                                                </div>
+                                            ) : (
+                                                <div style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>격차 없음</div>
+                                            )}
                                         </td>
-                                    ))}
-                                    <td style={{ textAlign: 'center' }}>
-                                        <button className="btn-delete" onClick={() => removeScenario(scen.id)} style={{ padding: '5px' }}>✕</button>
-                                    </td>
-                                </tr>
-                            ))}
+                                        <td style={{ textAlign: 'center' }}>
+                                            <button className="btn-delete" onClick={() => removeScenario(scen.id)} style={{ padding: '5px' }}>✕</button>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </table>
                 </div>
@@ -202,9 +220,8 @@ function Calculator() {
                 </div>
             </div>
 
-            <button className="btn btn-calc" onClick={handleCalc} style={{ margin: '10px 0 20px 0' }}>복리 시뮬레이션 가동</button>
+            <button className="btn btn-calc" onClick={handleCalc} style={{ margin: '10px 0 20px 0' }}>복리 시뮬레이션 가동 (차트 생성)</button>
 
-            {/* 시뮬레이션 결과 리포트 보드 */}
             <div className="chart-container"><canvas ref={canvasRef}></canvas></div>
             <div className="result-grid">
                 {results.map((r, i) => (
