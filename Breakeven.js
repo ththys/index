@@ -72,7 +72,6 @@ function Breakeven() {
     const isCurPositive = curMetrics.expectedValue > 0;
 
     return (
-        {/* ✨ 핵심 수정: CSS 파일 무시하고 무조건 900px 최대크기 + 가운데 정렬 강제 지정 */}
         <div className="fade-in" style={{ maxWidth: '900px', margin: '0 auto', width: '100%' }}>
             
             <div>
