@@ -9,11 +9,15 @@ function Breakeven() {
     const [presetName, setPresetName] = useState('');
 
     const [presets, setPresets] = useState(() => {
-        const saved = localStorage.getItem('finance_break_presets');
-        return saved ? JSON.parse(saved) : [
-            { id: 1, name: '닷컴버블급 폭락 시나리오', capital: 1000, upside: 15, cashRatio: 50, expectedDrop: 40, probDrop: 70 },
-            { id: 2, name: '일반적인 조정장 시나리오', capital: 1000, upside: 10, cashRatio: 20, expectedDrop: 10, probDrop: 50 }
-        ];
+        try {
+            const saved = localStorage.getItem('finance_break_presets');
+            return saved ? JSON.parse(saved) : [
+                { id: 1, name: '닷컴버블급 폭락 시나리오', capital: 1000, upside: 15, cashRatio: 50, expectedDrop: 40, probDrop: 70 },
+                { id: 2, name: '일반적인 조정장 시나리오', capital: 1000, upside: 10, cashRatio: 20, expectedDrop: 10, probDrop: 50 }
+            ];
+        } catch (e) {
+            return [];
+        }
     });
 
     const saveCurrentScenario = () => {
@@ -33,16 +37,20 @@ function Breakeven() {
     };
 
     const loadScenario = (p) => {
-        setCapital(p.capital); setUpside(p.upside); setCashRatio(p.cashRatio); setExpectedDrop(p.expectedDrop);
-        if(p.probDrop !== undefined) setProbDrop(p.probDrop);
+        setCapital(p.capital); 
+        setUpside(p.upside); 
+        setCashRatio(p.cashRatio); 
+        setExpectedDrop(p.expectedDrop);
+        if (p.probDrop !== undefined) setProbDrop(p.probDrop);
     };
 
-    // ✨ NaN 에러 방지 처리 완료 (p.probDrop이 없으면 기본값 50 적용)
+    // NaN 및 계산 오류 방지용 안전 로직 추가
     const calculateMetrics = (p) => {
         const R = (p.cashRatio || 0) / 100;
         const U = (p.upside || 0) / 100;
         const D = (p.expectedDrop || 0) / 100;
-        const P = (p.probDrop !== undefined ? p.probDrop : 50) / 100; 
+        const safeProbDrop = p.probDrop !== undefined ? p.probDrop : 50;
+        const P = safeProbDrop / 100; 
 
         const finalA = p.capital * (1 + U);
         const finalB_UpOnly = (p.capital * (1 - R) * (1 + U)) + (p.capital * R);
@@ -55,8 +63,8 @@ function Breakeven() {
         const rewardAlpha = finalB_Success - finalA;
 
         const expectedValue = (rewardAlpha * P) - (riskDrag * (1 - P));
-        const breakevenProb = (rewardAlpha + riskDrag) > 0 ? (riskDrag / (rewardAlpha + riskDrag) * 100).toFixed(1) : 0;
-        const rrRatio = totalRisk > 0 ? (rewardAlpha / totalRisk).toFixed(2) : '0.00';
+        const breakevenProb = (rewardAlpha + riskDrag) > 0 ? (riskDrag / (rewardAlpha + riskDrag) * 100).toFixed(1) : "0.0";
+        const rrRatio = totalRisk > 0 ? (rewardAlpha / totalRisk).toFixed(2) : "0.00";
 
         return { finalA, riskDrag, riskDrawdown, rewardAlpha, expectedValue, breakevenProb, rrRatio };
     };
@@ -75,7 +83,10 @@ function Breakeven() {
                 
                 <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     <div style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 'bold', borderBottom: '1px solid #334155', paddingBottom: '8px' }}>⚙️ 자본 및 환경 설정</div>
-                    <div className="input-group" style={{ margin: 0 }}><label>초기 자본금 (만원)</label><input type="number" value={capital} onChange={e => setCapital(Number(e.target.value))} /></div>
+                    <div className="input-group" style={{ margin: 0 }}>
+                        <label>초기 자본금 (만원)</label>
+                        <input type="number" value={capital} onChange={e => setCapital(Number(e.target.value))} />
+                    </div>
                     <div className="input-group" style={{ margin: 0 }}>
                         <label>목표 상승(%) / 예상 하락(%)</label>
                         <div style={{ display: 'flex', gap: '8px' }}>
@@ -83,11 +94,17 @@ function Breakeven() {
                             <input type="number" value={expectedDrop} onChange={e => setExpectedDrop(Number(e.target.value))} />
                         </div>
                     </div>
-                    <div className="input-group" style={{ margin: 0 }}><label>보유 현금 비중 (%)</label><input type="number" value={cashRatio} onChange={e => setCashRatio(Number(e.target.value))} /></div>
+                    <div className="input-group" style={{ margin: 0 }}>
+                        <label>보유 현금 비중 (%)</label>
+                        <input type="number" value={cashRatio} onChange={e => setCashRatio(Number(e.target.value))} />
+                    </div>
                     <div className="input-group" style={{ margin: 0, marginTop: '5px' }}>
                         <label style={{ color: '#38bdf8' }}>⚠️ 하락 확률: {probDrop}%</label>
                         <input type="range" min="0" max="100" value={probDrop} onChange={e => setProbDrop(Number(e.target.value))} style={{ width: '100%', marginTop: '5px' }} />
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#475569', marginTop: '3px' }}><span>0%</span><span>100%</span></div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#475569', marginTop: '3px' }}>
+                            <span>0%</span>
+                            <span>100%</span>
+                        </div>
                     </div>
                 </div>
 
@@ -144,11 +161,13 @@ function Breakeven() {
                             {presets.map(p => {
                                 const m = calculateMetrics(p);
                                 const isPos = m.expectedValue > 0;
+                                const safeProb = p.probDrop !== undefined ? p.probDrop : 50;
+                                
                                 return (
                                     <tr key={p.id} style={{ borderBottom: '1px solid #1e293b', background: isPos ? 'rgba(52, 211, 153, 0.02)' : 'rgba(239, 68, 68, 0.02)', cursor: 'pointer' }} onClick={() => loadScenario(p)}>
                                         <td style={{ padding: '10px' }}>
                                             <div style={{ fontWeight: 'bold', color: '#fff', fontSize: '12px' }}>{p.name}</div>
-                                            <div style={{ fontSize: '10px', color: '#64748b', marginTop: '2px' }}>현금{p.cashRatio}% / 상승{p.upside}% / 하락{p.expectedDrop}% / 확신{p.probDrop ?? 50}%</div>
+                                            <div style={{ fontSize: '10px', color: '#64748b', marginTop: '2px' }}>현금{p.cashRatio}% / 상승{p.upside}% / 하락{p.expectedDrop}% / 확신{safeProb}%</div>
                                         </td>
                                         <td style={{ padding: '10px', textAlign: 'right', color: '#f59e0b' }}>-{Math.round(m.riskDrag).toLocaleString()}만</td>
                                         <td style={{ padding: '10px', textAlign: 'right', color: '#ef4444' }}>-{Math.round(m.riskDrawdown).toLocaleString()}만</td>
@@ -157,7 +176,9 @@ function Breakeven() {
                                         <td style={{ padding: '10px', textAlign: 'right', fontWeight: 'bold', color: isPos ? '#34d399' : '#ef4444', fontSize: '13px' }}>
                                             {isPos ? '+' : ''}{Math.round(m.expectedValue).toLocaleString()}만
                                         </td>
-                                        <td style={{ padding: '10px', textAlign: 'center' }}><button className="btn-delete" onClick={(e) => deleteScenario(p.id, e)}>✕</button></td>
+                                        <td style={{ padding: '10px', textAlign: 'center' }}>
+                                            <button className="btn-delete" onClick={(e) => deleteScenario(p.id, e)}>✕</button>
+                                        </td>
                                     </tr>
                                 );
                             })}
@@ -169,5 +190,4 @@ function Breakeven() {
     );
 }
 
-// ✨ 드디어 돌아온 구원자
 export default Breakeven;
