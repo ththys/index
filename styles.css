@@ -1,27 +1,115 @@
-/* 글로벌 설정 및 폰트 */
+/* -----------------------------------------
+   1. 글로벌 설정 및 기본 폰트
+----------------------------------------- */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #0b1120; color: #f8fafc; overflow: hidden; }
+body { 
+    font-family: 'Segoe UI', Tahoma, sans-serif; 
+    background-color: #0b1120; 
+    color: #f8fafc; 
+    overflow: hidden; 
+}
 .app-container { display: flex; height: 100vh; }
 
-/* 사이드바 공통 디자인 */
-.sidebar { width: 280px; background-color: #0f172a; border-right: 1px solid #1e293b; padding: 30px 20px; display: flex; flex-direction: column; flex-shrink: 0; }
-.logo { font-size: 26px; font-weight: 700; margin-bottom: 50px; color: #38bdf8; cursor: pointer; display: flex; align-items: center; gap: 12px; }
-.menu-item { color: #94a3b8; padding: 14px 18px; margin-bottom: 10px; border-radius: 12px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 12px; }
-.menu-item:hover, .menu-item.active { background-color: #1e293b; color: #ffffff; }
+/* -----------------------------------------
+   2. 사이드바 (좌측 메뉴)
+----------------------------------------- */
+.sidebar { 
+    width: 280px; 
+    background-color: #0f172a; 
+    border-right: 1px solid #1e293b; 
+    padding: 30px 20px; 
+    display: flex; 
+    flex-direction: column; 
+    flex-shrink: 0; 
+}
+.logo { 
+    font-size: 26px; 
+    font-weight: 700; 
+    margin-bottom: 50px; 
+    color: #38bdf8; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+}
+.menu-item { 
+    color: #94a3b8; 
+    padding: 14px 18px; 
+    margin-bottom: 10px; 
+    border-radius: 12px; 
+    cursor: pointer; 
+    transition: 0.3s; 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+}
+.menu-item:hover, .menu-item.active { 
+    background-color: #1e293b; 
+    color: #ffffff; 
+}
 
-/* 메인 콘텐츠 영역 */
-.main-content { flex: 1; padding: 40px; overflow-y: auto; background-image: radial-gradient(circle at top right, rgba(56, 189, 248, 0.05), transparent); }
+/* -----------------------------------------
+   3. 메인 콘텐츠 영역 (우측 전체 화면)
+----------------------------------------- */
+.main-content { 
+    flex: 1; 
+    padding: 40px; 
+    overflow-y: auto; 
+    background-image: radial-gradient(circle at top right, rgba(56, 189, 248, 0.05), transparent); 
+}
 h2 { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
 .subtitle { color: #94a3b8; font-size: 18px; margin-bottom: 35px; }
 
-/* 공통 UI 컴포넌트 */
-.card { background-color: #1e293b; padding: 30px; border-radius: 20px; border: 1px solid #334155; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); }
-.btn { padding: 12px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; border: none; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+/* -----------------------------------------
+   ✨ [핵심 추가] 와이드 모니터 해상도 대응 
+   (화면이 무한정 늘어나는 것 방지 & 중앙 정렬)
+----------------------------------------- */
+.calc-layout, 
+.break-layout, 
+.dm-layout, 
+.home-grid {
+    max-width: 1400px; /* 너무 찢어지지 않게 적당한 최대 너비 제한 */
+    margin: 0 auto;    /* 남는 공간을 좌우로 밀어서 컨텐츠를 정중앙에 배치 */
+}
+
+/* -----------------------------------------
+   4. 공통 UI 컴포넌트 (카드, 버튼, 입력창)
+----------------------------------------- */
+.card { 
+    background-color: #1e293b; 
+    padding: 30px; 
+    border-radius: 20px; 
+    border: 1px solid #334155; 
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); 
+}
+.btn { 
+    padding: 12px 15px; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-weight: bold; 
+    border: none; 
+    transition: 0.2s; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+}
+.input-group { margin-bottom: 20px; }
 .input-group label { display: block; margin-bottom: 10px; color: #94a3b8; font-size: 14px; font-weight: bold; }
-.input-group input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 18px; transition: 0.2s; }
+.input-group input { 
+    width: 100%; 
+    padding: 15px; 
+    border-radius: 12px; 
+    border: 1px solid #334155; 
+    background: #0f172a; 
+    color: #fff; 
+    font-size: 18px; 
+    transition: 0.2s; 
+}
 .input-group input:focus { border-color: #38bdf8; outline: none; }
 
-/* 홈 화면 전용 레이아웃 */
+/* -----------------------------------------
+   5. 홈 화면 전용 (A페이지)
+----------------------------------------- */
 .home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; margin-top: 30px; }
 .nav-card { background-color: #1e293b; border: 1px solid #334155; border-radius: 20px; padding: 35px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; height: 260px; justify-content: space-between; }
 .nav-card:hover { transform: translateY(-8px); border-color: #38bdf8; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4); }
@@ -30,16 +118,19 @@ h2 { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
 .card-footer { margin-top: 20px; font-size: 14px; color: #475569; font-weight: bold; text-align: right; }
 .nav-card:hover .card-footer { color: #38bdf8; }
 
-/* 손익분기 전용 기본 레이아웃 */
-.break-layout { display: grid; grid-template-columns: 380px 1fr; gap: 30px; }
+/* -----------------------------------------
+   6. 손익분기 & 전략 분석기 전용 (Breakeven.js)
+----------------------------------------- */
+.break-layout { display: flex; flex-direction: column; gap: 30px; }
 .vs-badge { background: #334155; padding: 6px 16px; border-radius: 20px; font-size: 12px; color: #38bdf8; display: inline-block; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px; }
-.result-main { background: #0f172a; border-radius: 24px; padding: 40px; text-align: center; display: flex; flex-direction: column; justify-content: center; border: 2px solid transparent; transition: 0.3s; }
+.result-main { background: #0f172a; border-radius: 24px; text-align: center; display: flex; flex-direction: column; justify-content: center; border: 2px solid transparent; transition: 0.3s; }
 .win-b { border-color: #34d399; background: rgba(52, 211, 153, 0.05); }
 .win-a { border-color: #ef4444; background: rgba(239, 68, 68, 0.05); }
 .alpha-val { font-size: 56px; font-weight: 800; margin: 20px 0; }
-.conclusion { font-size: 18px; line-height: 1.6; color: #e2e8f0; background: #1e293b; padding: 20px; border-radius: 16px; }
 
-/* ✨ 손익비 시나리오 & 리스크 보드 전용 */
+/* -----------------------------------------
+   7. 공통 시나리오 보관함 UI
+----------------------------------------- */
 .scenario-header { color: #94a3b8; font-size: 13px; font-weight: bold; display: block; margin-bottom: 10px; }
 .scenario-input-row { display: flex; gap: 10px; margin-bottom: 15px; }
 .scenario-input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 14px; }
@@ -53,6 +144,9 @@ h2 { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
 .btn-delete { background: none; border: none; color: #64748b; cursor: pointer; transition: 0.2s; font-size: 14px; }
 .btn-delete:hover { color: #ef4444; }
 
+/* -----------------------------------------
+   8. 리스크/보상 표시 카드 UI
+----------------------------------------- */
 .risk-breakdown { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
 .risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 .risk-card { background: #1e293b; padding: 15px; border-radius: 16px; text-align: left; }
@@ -61,31 +155,28 @@ h2 { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
 .risk-title { font-size: 12px; color: #94a3b8; }
 .risk-value { font-size: 18px; font-weight: bold; margin-top: 5px; }
 .risk-desc { font-size: 11px; color: #475569; margin-top: 3px; }
-
 .final-conclusion { background: #0f172a; padding: 25px; border-radius: 20px; border: 1px solid #38bdf8; margin-top: 10px; text-align: center; }
-.final-ratio { font-size: 42px; font-weight: 800; color: #38bdf8; }
 
-/* 시계열 시뮬레이터 전용 */
+/* -----------------------------------------
+   9. 시계열 시뮬레이터 전용 (Calculator.js)
+----------------------------------------- */
 .calc-layout { display: flex; flex-direction: column; gap: 30px; }
-.top-settings { display: flex; gap: 15px; align-items: flex-end; margin-bottom: 25px; flex-wrap: wrap; }
-.scenario-board { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px; }
-.scenario-board::-webkit-scrollbar { height: 8px; }
-.scenario-board::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
-.scenario-column { background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 15px; width: 170px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
-.scenario-column.market { background: #082f49; border-color: #0284c7; width: 190px; }
-.market .scenario-header { color: #38bdf8; border-color: #0369a1; }
-.input-row { display: flex; align-items: center; gap: 10px; }
-.input-row span { color: #94a3b8; font-size: 13px; width: 35px; text-align: center; }
-.input-row input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #475569; background: #1e293b; color: white; text-align: right; font-size: 15px; }
-.market .input-row input { background: #0c4a6e; border-color: #0ea5e9; font-weight: bold; }
 .btn-period { background: #334155; color: #f8fafc; font-size: 14px; }
-.btn-add-col { background: transparent; color: #94a3b8; border: 1px dashed #475569; width: 120px; flex-shrink: 0; }
-.btn-calc { background: #38bdf8; color: #0b1120; font-size: 16px; width: 100%; padding: 15px; margin-top: 15px; }
-.chart-container { background-color: #1e293b; padding: 25px; border-radius: 20px; border: 1px solid #334155; height: 400px; }
+.btn-calc { background: #38bdf8; color: #0b1120; font-size: 16px; width: 100%; padding: 15px; }
+.chart-container { 
+    background-color: #1e293b; 
+    padding: 25px; 
+    border-radius: 20px; 
+    border: 1px solid #334155; 
+    height: 400px; 
+    max-height: 450px; /* 차트가 무한정 커지는 것 방지 */
+}
 .result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-top: 10px; }
 .res-box { padding: 20px; border-radius: 16px; border: 1px solid #334155; background: #0f172a; }
 
-/* 듀얼 모멘텀 전용 */
+/* -----------------------------------------
+   10. 듀얼 모멘텀 전용 (DualMomentum.js)
+----------------------------------------- */
 .dm-layout { display: flex; flex-direction: column; gap: 30px; }
 .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
 .asset-box { background: #0f172a; padding: 20px; border-radius: 16px; border: 1px solid #334155; }
@@ -99,6 +190,11 @@ h2 { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
 .risk-off .signal-status { color: #ef4444; }
 .target-asset { font-size: 56px; font-weight: 800; color: #f8fafc; }
 
-/* 공통 애니메이션 */
+/* -----------------------------------------
+   11. 공통 애니메이션 효과
+----------------------------------------- */
 .fade-in { animation: fadeIn 0.4s ease-in-out; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
