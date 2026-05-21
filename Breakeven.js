@@ -72,7 +72,9 @@ function Breakeven() {
     const isCurPositive = curMetrics.expectedValue > 0;
 
     return (
-        <div className="fade-in">
+        {/* ✨ 핵심 수정: CSS 파일 무시하고 무조건 900px 최대크기 + 가운데 정렬 강제 지정 */}
+        <div className="fade-in" style={{ maxWidth: '900px', margin: '0 auto', width: '100%' }}>
+            
             <div>
                 <h2>전략 의사결정 분석기 (EV 모델) ⚖️</h2>
                 <p className="subtitle">손익비와 확률을 결합하여 수학적 기댓값을 산출합니다.</p>
@@ -160,7 +162,6 @@ function Breakeven() {
                             {presets.map(p => {
                                 const m = calculateMetrics(p);
                                 const isPos = m.expectedValue > 0;
-                                // 🚨 에러 원인이었던 부분 안전하게 수정 완료!
                                 const safeProb = p.probDrop !== undefined ? p.probDrop : 50;
                                 
                                 return (
