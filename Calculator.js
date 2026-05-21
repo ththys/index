@@ -4,7 +4,7 @@ function Calculator() {
 
     const [capital, setCapital] = useState(1000);
     const [marketReturns, setMarketReturns] = useState([-20, 10, 15]);
-    const [scenarios, setScenarios] = useState([{ id: 1, label: 'B조건', ratios: [30, 0, 0] }]);
+    const [scenarios, setScenarios] = useState([{ id: 1, label: 'B전략', ratios: [30, 0, 0] }]);
     const [results, setResults] = useState([]);
     const chartRef = useRef(null);
     const canvasRef = useRef(null);
@@ -20,17 +20,18 @@ function Calculator() {
     };
     const addScenario = () => {
         const nextChar = String.fromCharCode(66 + scenarios.length);
-        setScenarios([...scenarios, { id: Date.now(), label: `${nextChar}조건`, ratios: Array(marketReturns.length).fill(0) }]);
+        setScenarios([...scenarios, { id: Date.now(), label: `${nextChar}전략`, ratios: Array(marketReturns.length).fill(0) }]);
     };
 
     const handleCalc = () => {
-        const allScens = [{ label: 'A조건 (올인)', ratios: Array(marketReturns.length).fill(0) }, ...scenarios];
+        const allScens = [{ label: 'A전략 (현금 0%)', ratios: Array(marketReturns.length).fill(0) }, ...scenarios];
         let baseFinal = 0;
 
         const newResults = allScens.map((scen, idx) => {
             let currentVal = capital;
             let trajectory = [capital];
             marketReturns.forEach((ret, pIdx) => {
+                // 비율을 현금 비중으로 명확히 연산
                 const r = (scen.ratios[pIdx] || 0) / 100;
                 let invested = currentVal * (1 - r);
                 let cash = currentVal * r;
@@ -62,7 +63,7 @@ function Calculator() {
         <div className="fade-in calc-layout">
             <div>
                 <h2 style={{fontSize: '32px', fontWeight: '800', marginBottom: '10px'}}>시계열 시뮬레이터 📈</h2>
-                <p style={{color: '#94a3b8', fontSize: '18px'}}>시간 흐름에 따른 비중 조절이 자산 곡선에 미치는 영향을 분석합니다.</p>
+                <p style={{color: '#94a3b8', fontSize: '18px'}}>시간 흐름에 따른 현금 비중 조절이 자산 곡선에 미치는 영향을 분석합니다.</p>
             </div>
             <div className="card">
                 <div className="top-settings">
@@ -87,12 +88,13 @@ function Calculator() {
                         ))}
                     </div>
                     <div className="scenario-column" style={{ opacity: 0.6 }}>
-                        <div className="scenario-header">A조건 (기본)</div>
+                        <div className="scenario-header">A전략 (현금 0%)</div>
                         {marketReturns.map((_, pIdx) => ( <div className="input-row" key={pIdx}><span>{pIdx + 1}기</span><input type="number" disabled value="0" /></div> ))}
                     </div>
                     {scenarios.map((scen, sIdx) => (
                         <div className="scenario-column" key={scen.id}>
-                            <div className="scenario-header">{scen.label} 비중(%)</div>
+                            {/* 명칭을 명확하게 변경 */}
+                            <div className="scenario-header" style={{color: '#34d399'}}>{scen.label} 현금(%)</div>
                             {marketReturns.map((_, pIdx) => (
                                 <div className="input-row" key={pIdx}>
                                     <span>{pIdx + 1}기</span>
@@ -101,7 +103,7 @@ function Calculator() {
                             ))}
                         </div>
                     ))}
-                    <button className="btn btn-add-col" onClick={addScenario}>+ 조건 추가</button>
+                    <button className="btn btn-add-col" onClick={addScenario}>+ 전략 추가</button>
                 </div>
                 <button className="btn btn-calc" onClick={handleCalc}>시뮬레이션 실행</button>
             </div>
