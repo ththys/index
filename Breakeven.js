@@ -44,7 +44,6 @@ function Breakeven() {
         if (p.probDrop !== undefined) setProbDrop(p.probDrop);
     };
 
-    // NaN 및 계산 오류 방지용 안전 로직 추가
     const calculateMetrics = (p) => {
         const R = (p.cashRatio || 0) / 100;
         const U = (p.upside || 0) / 100;
@@ -161,6 +160,7 @@ function Breakeven() {
                             {presets.map(p => {
                                 const m = calculateMetrics(p);
                                 const isPos = m.expectedValue > 0;
+                                // 🚨 에러 원인이었던 부분 안전하게 수정 완료!
                                 const safeProb = p.probDrop !== undefined ? p.probDrop : 50;
                                 
                                 return (
