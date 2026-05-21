@@ -1,202 +1,61 @@
-/* -----------------------------------------
-   1. 글로벌 설정 및 기본 폰트
------------------------------------------ */
+/* 글로벌 설정 */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { 
-    font-family: 'Segoe UI', Tahoma, sans-serif; 
-    background-color: #0b1120; 
-    color: #f8fafc; 
-    overflow: hidden; 
-}
+body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #0b1120; color: #f8fafc; overflow: hidden; }
 .app-container { display: flex; height: 100vh; }
 
-/* -----------------------------------------
-   2. 사이드바 (좌측 메뉴)
------------------------------------------ */
-.sidebar { 
-    width: 280px; 
-    background-color: #0f172a; 
-    border-right: 1px solid #1e293b; 
-    padding: 30px 20px; 
-    display: flex; 
-    flex-direction: column; 
-    flex-shrink: 0; 
-}
-.logo { 
-    font-size: 26px; 
-    font-weight: 700; 
-    margin-bottom: 50px; 
-    color: #38bdf8; 
-    cursor: pointer; 
-    display: flex; 
-    align-items: center; 
-    gap: 12px; 
-}
-.menu-item { 
-    color: #94a3b8; 
-    padding: 14px 18px; 
-    margin-bottom: 10px; 
-    border-radius: 12px; 
-    cursor: pointer; 
-    transition: 0.3s; 
-    display: flex; 
-    align-items: center; 
-    gap: 12px; 
-}
-.menu-item:hover, .menu-item.active { 
-    background-color: #1e293b; 
-    color: #ffffff; 
-}
+/* 사이드바 */
+.sidebar { width: 220px; background-color: #0f172a; border-right: 1px solid #1e293b; padding: 20px 15px; display: flex; flex-direction: column; flex-shrink: 0; }
+.logo { font-size: 20px; font-weight: 700; margin-bottom: 30px; color: #38bdf8; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+.menu-item { color: #94a3b8; padding: 10px 12px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+.menu-item:hover, .menu-item.active { background-color: #1e293b; color: #ffffff; }
 
-/* -----------------------------------------
-   3. 메인 콘텐츠 영역 (우측 전체 화면)
------------------------------------------ */
-.main-content { 
-    flex: 1; 
-    padding: 40px; 
-    overflow-y: auto; 
-    background-image: radial-gradient(circle at top right, rgba(56, 189, 248, 0.05), transparent); 
-}
-h2 { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
-.subtitle { color: #94a3b8; font-size: 18px; margin-bottom: 35px; }
+/* 메인 콘텐츠 */
+.main-content { flex: 1; padding: 20px; overflow-y: auto; background-image: radial-gradient(circle at top right, rgba(56, 189, 248, 0.05), transparent); }
+h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.subtitle { color: #94a3b8; font-size: 13px; margin-bottom: 20px; }
 
-/* -----------------------------------------
-   ✨ [핵심 변경] 와이드 화면 중앙 정렬 및 크기 축소 
-   (기존 1400px -> 1000px로 2/3 축소)
------------------------------------------ */
-.calc-layout, 
-.break-layout, 
-.dm-layout, 
-.home-grid {
-    max-width: 1000px; /* 눈에 한 번에 들어오는 컴팩트한 사이즈 */
-    margin: 0 auto;    
-}
+/* ✨ 최대 너비 절반으로 축소 (850px) */
+.calc-layout, .break-layout, .dm-layout, .home-grid { max-width: 850px; margin: 0 auto; }
 
-/* -----------------------------------------
-   4. 공통 UI 컴포넌트 (카드, 버튼, 입력창)
------------------------------------------ */
-.card { 
-    background-color: #1e293b; 
-    padding: 25px; /* 내부 여백도 살짝 줄여서 오밀조밀하게 */
-    border-radius: 20px; 
-    border: 1px solid #334155; 
-    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); 
-}
-.btn { 
-    padding: 12px 15px; 
-    border-radius: 8px; 
-    cursor: pointer; 
-    font-weight: bold; 
-    border: none; 
-    transition: 0.2s; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-}
-.input-group { margin-bottom: 20px; }
-.input-group label { display: block; margin-bottom: 10px; color: #94a3b8; font-size: 14px; font-weight: bold; }
-.input-group input { 
-    width: 100%; 
-    padding: 12px; /* 입력창 높이 축소 */
-    border-radius: 10px; 
-    border: 1px solid #334155; 
-    background: #0f172a; 
-    color: #fff; 
-    font-size: 16px; 
-    transition: 0.2s; 
-}
+/* 공통 UI (카드, 입력창 콤팩트화) */
+.card { background-color: #1e293b; padding: 15px; border-radius: 12px; border: 1px solid #334155; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
+.btn { padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; border: none; transition: 0.2s; font-size: 12px; }
+.input-group { margin-bottom: 12px; }
+.input-group label { display: block; margin-bottom: 5px; color: #94a3b8; font-size: 12px; font-weight: bold; }
+.input-group input { width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 13px; }
 .input-group input:focus { border-color: #38bdf8; outline: none; }
 
-/* -----------------------------------------
-   5. 홈 화면 전용 (A페이지)
------------------------------------------ */
-.home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 30px; }
-.nav-card { background-color: #1e293b; border: 1px solid #334155; border-radius: 20px; padding: 30px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; height: 240px; justify-content: space-between; }
-.nav-card:hover { transform: translateY(-8px); border-color: #38bdf8; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4); }
-.nav-card h3 { color: #38bdf8; font-size: 22px; margin-bottom: 15px; font-weight: 700; }
-.nav-card p { color: #94a3b8; font-size: 14px; line-height: 1.6; }
-.card-footer { margin-top: 20px; font-size: 14px; color: #475569; font-weight: bold; text-align: right; }
-.nav-card:hover .card-footer { color: #38bdf8; }
+/* 홈 화면 전용 */
+.home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-top: 20px; }
+.nav-card { background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; height: 180px; justify-content: space-between; }
+.nav-card:hover { transform: translateY(-4px); border-color: #38bdf8; }
+.nav-card h3 { color: #38bdf8; font-size: 16px; margin-bottom: 10px; font-weight: 700; }
+.nav-card p { color: #94a3b8; font-size: 12px; line-height: 1.5; }
+.card-footer { margin-top: 15px; font-size: 11px; color: #475569; font-weight: bold; text-align: right; }
 
-/* -----------------------------------------
-   6. 손익분기 & 전략 분석기 전용 (Breakeven.js)
------------------------------------------ */
-.break-layout { display: flex; flex-direction: column; gap: 25px; }
-.vs-badge { background: #334155; padding: 6px 16px; border-radius: 20px; font-size: 12px; color: #38bdf8; display: inline-block; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px; }
-.result-main { background: #0f172a; border-radius: 24px; text-align: center; display: flex; flex-direction: column; justify-content: center; border: 2px solid transparent; transition: 0.3s; }
+/* 손익분기 전용 */
+.break-layout { display: flex; flex-direction: column; gap: 15px; }
+.vs-badge { background: #334155; padding: 4px 10px; border-radius: 12px; font-size: 10px; color: #38bdf8; display: inline-block; margin-bottom: 10px; font-weight: bold; }
+.result-main { background: #0f172a; border-radius: 16px; text-align: center; display: flex; flex-direction: column; justify-content: center; border: 2px solid transparent; transition: 0.3s; }
 .win-b { border-color: #34d399; background: rgba(52, 211, 153, 0.05); }
 .win-a { border-color: #ef4444; background: rgba(239, 68, 68, 0.05); }
-.alpha-val { font-size: 48px; font-weight: 800; margin: 15px 0; }
 
-/* -----------------------------------------
-   7. 공통 시나리오 보관함 UI
------------------------------------------ */
-.scenario-header { color: #94a3b8; font-size: 13px; font-weight: bold; display: block; margin-bottom: 10px; }
-.scenario-input-row { display: flex; gap: 10px; margin-bottom: 15px; }
-.scenario-input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 14px; }
-.scenario-input:focus { border-color: #38bdf8; outline: none; }
-.scenario-list { display: flex; flex-direction: column; gap: 8px; max-height: 150px; overflow-y: auto; }
-.scenario-list::-webkit-scrollbar { width: 6px; }
-.scenario-list::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
-.scenario-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #0f172a; border-radius: 8px; border: 1px solid #334155; cursor: pointer; transition: 0.2s; }
-.scenario-item:hover { border-color: #38bdf8; }
-.btn-save { background: #38bdf8; color: #0b1120; font-size: 13px; padding: 0 15px; }
-.btn-delete { background: none; border: none; color: #64748b; cursor: pointer; transition: 0.2s; font-size: 14px; }
-.btn-delete:hover { color: #ef4444; }
+/* 시나리오 보관함 */
+.scenario-header { color: #94a3b8; font-size: 12px; font-weight: bold; display: block; margin-bottom: 8px; }
+.scenario-input-row { display: flex; gap: 8px; margin-bottom: 10px; }
+.scenario-input { flex: 1; padding: 8px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 12px; }
+.scenario-list { display: flex; flex-direction: column; gap: 6px; max-height: 100px; overflow-y: auto; }
+.scenario-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: #0f172a; border-radius: 6px; border: 1px solid #334155; cursor: pointer; transition: 0.2s; }
+.btn-save { background: #38bdf8; color: #0b1120; font-size: 11px; padding: 0 12px; }
+.btn-delete { background: none; border: none; color: #64748b; cursor: pointer; font-size: 12px; }
 
-/* -----------------------------------------
-   8. 리스크/보상 표시 카드 UI
------------------------------------------ */
-.risk-breakdown { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
-.risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-.risk-card { background: #1e293b; padding: 15px; border-radius: 16px; text-align: left; }
-.risk-card.drag { border-top: 4px solid #f59e0b; }
-.risk-card.drawdown { border-top: 4px solid #ef4444; }
-.risk-title { font-size: 12px; color: #94a3b8; }
-.risk-value { font-size: 18px; font-weight: bold; margin-top: 5px; }
-.risk-desc { font-size: 11px; color: #475569; margin-top: 3px; }
-.final-conclusion { background: #0f172a; padding: 25px; border-radius: 20px; border: 1px solid #38bdf8; margin-top: 10px; text-align: center; }
+/* 시계열 시뮬레이터 */
+.calc-layout { display: flex; flex-direction: column; gap: 15px; }
+.btn-calc { background: #38bdf8; color: #0b1120; font-size: 13px; width: 100%; padding: 10px; }
+.chart-container { background-color: #1e293b; padding: 15px; border-radius: 12px; border: 1px solid #334155; height: 250px; max-height: 250px; }
+.result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-top: 10px; }
+.res-box { padding: 12px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; }
 
-/* -----------------------------------------
-   9. 시계열 시뮬레이터 전용 (Calculator.js)
------------------------------------------ */
-.calc-layout { display: flex; flex-direction: column; gap: 25px; }
-.btn-period { background: #334155; color: #f8fafc; font-size: 13px; }
-.btn-calc { background: #38bdf8; color: #0b1120; font-size: 15px; width: 100%; padding: 12px; }
-
-/* ✨ 차트 높이 축소 (450px -> 300px) */
-.chart-container { 
-    background-color: #1e293b; 
-    padding: 20px; 
-    border-radius: 20px; 
-    border: 1px solid #334155; 
-    height: 300px; 
-    max-height: 300px; 
-}
-.result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 10px; }
-.res-box { padding: 15px; border-radius: 16px; border: 1px solid #334155; background: #0f172a; }
-
-/* -----------------------------------------
-   10. 듀얼 모멘텀 전용 (DualMomentum.js)
------------------------------------------ */
-.dm-layout { display: flex; flex-direction: column; gap: 25px; }
-.input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
-.asset-box { background: #0f172a; padding: 20px; border-radius: 16px; border: 1px solid #334155; }
-.asset-box label { display: block; color: #94a3b8; font-size: 14px; font-weight: bold; margin-bottom: 10px; }
-.asset-box input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background-color: #1e293b; color: white; font-size: 16px; margin-bottom: 10px; }
-.signal-card { text-align: center; padding: 40px 20px; border-radius: 20px; margin-top: 10px; border: 2px solid transparent; }
-.risk-on { background: rgba(52, 211, 153, 0.05); border-color: #34d399; }
-.risk-off { background: rgba(239, 68, 68, 0.05); border-color: #ef4444; }
-.signal-status { font-size: 20px; font-weight: bold; margin-bottom: 15px; letter-spacing: 2px; }
-.risk-on .signal-status { color: #34d399; }
-.risk-off .signal-status { color: #ef4444; }
-.target-asset { font-size: 48px; font-weight: 800; color: #f8fafc; }
-
-/* -----------------------------------------
-   11. 공통 애니메이션 효과
------------------------------------------ */
-.fade-in { animation: fadeIn 0.4s ease-in-out; }
-@keyframes fadeIn { 
-    from { opacity: 0; transform: translateY(10px); } 
-    to { opacity: 1; transform: translateY(0); } 
-}
+/* 공통 애니메이션 */
+.fade-in { animation: fadeIn 0.3s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
