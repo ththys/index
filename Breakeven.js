@@ -71,7 +71,6 @@ function Breakeven() {
                 <p className="subtitle">손익비와 확률을 결합하여 수학적 기댓값을 산출합니다.</p>
             </div>
 
-            {/* ✨ 좌측 입력창 폭을 260px로 확 줄임 */}
             <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: '15px', marginBottom: '15px' }}>
                 
                 <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -92,7 +91,6 @@ function Breakeven() {
                     </div>
                 </div>
 
-                {/* ✨ 우측 패딩과 폰트 사이즈 대폭 축소 */}
                 <div className={`result-main ${isCurPositive ? 'win-b' : 'win-a'}`} style={{ padding: '20px', justifyContent: 'center' }}>
                     <div><div className="vs-badge">REAL-TIME EXPECTANCY</div></div>
                     <div style={{ fontSize: '11px', color: '#94a3b8' }}>현재 세팅 기댓값(EV)</div>
@@ -120,7 +118,6 @@ function Breakeven() {
                 </div>
             </div>
 
-            {/* ✨ 하단 테이블 셀 패딩 축소 및 폰트 축소 */}
             <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
                 <div style={{ background: '#1e293b', padding: '12px 15px', borderBottom: '1px solid #334155', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <h3 style={{ fontSize: '13px', fontWeight: 'bold', color: '#f8fafc', margin: 0 }}>📊 시나리오 보관함 대조</h3>
@@ -171,3 +168,6 @@ function Breakeven() {
         </div>
     );
 }
+
+// ✨ 드디어 돌아온 구원자
+export default Breakeven;
