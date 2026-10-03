@@ -5,6 +5,23 @@ function Home({ setPage }) {
             <p className="subtitle">데이터 기반 시뮬레이션으로 투자 의사결정을 최적화하세요.</p>
             
             <div className="home-grid">
+                {/* 종목/섹터 리서치 카드 */}
+                <div className="nav-card" onClick={() => setPage('multi')}>
+                    <div>
+                        <h3>다중 변화량 📊</h3>
+                        <p>관심종목의 1D~1Y, YTD 수익률과 MDD, 고점대비 낙폭을 한 표에서 정렬해 비교합니다.</p>
+                    </div>
+                    <div className="card-footer">표 열기 →</div>
+                </div>
+
+                <div className="nav-card" onClick={() => setPage('sector')}>
+                    <div>
+                        <h3>섹터 스크리닝 🧭</h3>
+                        <p>벤치마크 대비 상대강도로 지금 강한 섹터와 약한 섹터를 가려냅니다.</p>
+                    </div>
+                    <div className="card-footer">스크리닝 →</div>
+                </div>
+
                 {/* 손익분기 분석 카드 */}
                 <div className="nav-card" onClick={() => setPage('break')}>
                     <div>

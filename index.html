@@ -15,31 +15,54 @@
 <body>
     <div id="root"></div>
 
+    <script type="text/babel" src="MarketCommon.js"></script>
     <script type="text/babel" src="Home.js"></script>
     <script type="text/babel" src="Breakeven.js"></script>
     <script type="text/babel" src="Calculator.js"></script>
     <script type="text/babel" src="DualMomentum.js"></script>
+    <script type="text/babel" src="StockLookup.js"></script>
+    <script type="text/babel" src="MultiChange.js"></script>
+    <script type="text/babel" src="SectorScreen.js"></script>
 
     <script type="text/babel">
         const { useState } = React;
 
-        // 사이드바 구조 정의
+        // 사이드바 메뉴 정의: 섹션별로 묶음 (새 화면은 여기에 한 줄 추가)
+        const MENU = [
+            { section: null, items: [
+                { id: 'home', icon: 'fa-house', label: '홈 대시보드' },
+            ]},
+            { section: '④ 개별종목', items: [
+                { id: 'stock', icon: 'fa-magnifying-glass', label: '종목 조회' },
+                { id: 'multi', icon: 'fa-table-list', label: '다중 변화량' },
+            ]},
+            { section: '③ 섹터', items: [
+                { id: 'sector', icon: 'fa-layer-group', label: '섹터 스크리닝' },
+            ]},
+            { section: '② 매크로', items: [], todo: '준비중' },
+            { section: '① HQ · 리스크', items: [], todo: '준비중' },
+            { section: '도구', items: [
+                { id: 'break', icon: 'fa-scale-balanced', label: '손익분기 분석' },
+                { id: 'calc', icon: 'fa-chart-line', label: '시계열 시뮬레이터' },
+                { id: 'dm', icon: 'fa-traffic-light', label: '듀얼 모멘텀' },
+            ]},
+        ];
+
         function Sidebar({ currentPage, setPage }) {
             return (
                 <aside className="sidebar">
                     <div className="logo" onClick={() => setPage('home')}>💎 금융</div>
-                    <div className={`menu-item ${currentPage === 'home' ? 'active' : ''}`} onClick={() => setPage('home')}>
-                        <i className="fa-solid fa-house"></i> 홈 대시보드
-                    </div>
-                    <div className={`menu-item ${currentPage === 'break' ? 'active' : ''}`} onClick={() => setPage('break')}>
-                        <i className="fa-solid fa-scale-balanced"></i> 손익분기 분석
-                    </div>
-                    <div className={`menu-item ${currentPage === 'calc' ? 'active' : ''}`} onClick={() => setPage('calc')}>
-                        <i className="fa-solid fa-chart-line"></i> 시계열 시뮬레이터
-                    </div>
-                    <div className={`menu-item ${currentPage === 'dm' ? 'active' : ''}`} onClick={() => setPage('dm')}>
-                        <i className="fa-solid fa-traffic-light"></i> 듀얼 모멘텀
-                    </div>
+                    {MENU.map((group, gi) => (
+                        <div key={gi} className="menu-group">
+                            {group.section && <div className="menu-section">{group.section}</div>}
+                            {group.items.map(it => (
+                                <div key={it.id} className={`menu-item ${currentPage === it.id ? 'active' : ''}`} onClick={() => setPage(it.id)}>
+                                    <i className={`fa-solid ${it.icon}`}></i> {it.label}
+                                </div>
+                            ))}
+                            {group.todo && <div className="menu-todo">{group.todo}</div>}
+                        </div>
+                    ))}
                 </aside>
             );
         }
@@ -47,12 +70,19 @@
         // 앱 사령탑 라우터
         function App() {
             const [currentPage, setCurrentPage] = useState('home');
+            const [ticker, setTicker] = useState('');
+
+            // 표에서 종목 이름을 누르면 종목 조회로 이동
+            const openStock = (t) => { setTicker(t); setCurrentPage('stock'); };
 
             return (
                 <div className="app-container">
                     <Sidebar currentPage={currentPage} setPage={setCurrentPage} />
                     <main className="main-content">
                         {currentPage === 'home' && <Home setPage={setCurrentPage} />}
+                        {currentPage === 'stock' && <StockLookup ticker={ticker} setTicker={setTicker} />}
+                        {currentPage === 'multi' && <MultiChange openStock={openStock} />}
+                        {currentPage === 'sector' && <SectorScreen openStock={openStock} />}
                         {currentPage === 'break' && <Breakeven />}
                         {currentPage === 'calc' && <Calculator />}
                         {currentPage === 'dm' && <DualMomentum />}
